@@ -30,7 +30,6 @@ if( is_object( $Relation ) ) {
 				)
 			);
 			$nonce = 'rb_release_'.$Relation->related_post_ID.'from'.$_GET['post'];
-			TM\debug($nonce, 'nonce');
 			$HTML->a( __('Release', 'relationboxes'), array(
 				'class' => 'rb_submitdelete',
 				'href' => get_bloginfo('wpurl') . '/wp-admin/post.php?post=' . $post->ID 
