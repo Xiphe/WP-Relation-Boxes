@@ -3,9 +3,9 @@
 Plugin Name: Relation Boxes
 Plugin URI: https://github.com/Xiphe/WP-Relation-Boxes
 Description: A Wordpress Plugin for easy enabling n-1, 1-1 and n-n relationships
-Version: 0.0.5
+Version: 1.0.1
 Namespace: Xiphe\RelationBoxes
-Date: 19.09.2012 17:30:00 +02:00
+Date: 25.09.2012 10:02:05 +02:00
 Author: Xiphe
 Author URI: https://github.com/Xiphe/
 Required Plugins: !themaster, !html

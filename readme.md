@@ -10,7 +10,7 @@ See [Plugin Page](https://github.com/Xiphe/WP-Relation-Boxes) for details
 Version
 -------
 
-1.0.0
+1.0.1
 
 
 Installation
@@ -35,13 +35,16 @@ and i will try to answer.
 Changelog
 ---------
 
+### 1.0.1
++ Should delete 1-n and n-1 relations correctly on both sides now.
++ bugfix
+
 ### 1.0.0
-+   **First public version**
++ **First public version**
 
 
 Upgrade Notice
 --------------
-
 
 
 Known Bugs

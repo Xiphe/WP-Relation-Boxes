@@ -81,6 +81,14 @@ class RelationController extends TM\THEWPMASTER {
 				'rb_' . $_POST['post_type'] . $key . '_mBQ3^b7s&e!!KKhN' )
 			) continue;
 			
+			// Build the addexisting array from serial if js is enabled.
+			if (isset($_POST['rb_js'])
+			 && isset($postvar['serial'])
+			 && $_POST['rb_js'] === 'on' 
+			) {
+				parse_str($postvar['serial'], $postvar['addexisting']);
+				$postvar['addexisting'] = $postvar['addexisting']['rb'];
+			}
 
 			// Get the Relation Draft
 			$Draft = Master::inst()->aRelationDrafts[ 
@@ -102,23 +110,17 @@ class RelationController extends TM\THEWPMASTER {
 				}
 			}
 
-			// TODO: Fix type 1 relation insert
-
-			// Build the addexisting array from serial if js is enabled.
-			if (isset($_POST['rb_js'])
-			 && isset($postvar['serial'])
-			 && $_POST['rb_js'] === 'on' 
-			) {
-				parse_str($postvar['serial'], $postvar['addexisting']);
-				// $postvar['serial'] = str_replace( 'rb[]=', '', $postvar['serial'] );
-				// $postvar['addexisting'] = explode( '&', $postvar['serial'] );
-				$postvar['addexisting'] = $postvar['addexisting']['rb'];
+			if( $Draft->type == 1 ) {
+				foreach($postvar['addexisting'] as $addID) {
+					if( !$Draft->Mirror->delete_relations($addID) ) {
+						$this->set_adminMessage(__(
+							'Relation could not be updated because you do not have permissions to do that.',
+							'relationboxes'
+						), true);
+						continue;
+					}
+				}
 			}
-
-			// $this->debug( $_POST, '_POST' );
-			// $this->diebug('tot');
-
-
 
 			// Add the relations
 			if( is_array( $postvar['addexisting'] )

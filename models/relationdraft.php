@@ -68,7 +68,7 @@ class RelationDraft extends TM\THEWPMODEL {
 			foreach( Master::inst()->get_models( 
 				'Relation', 
 				array(
-					// 'post_ID' => $postID,
+					// 'post_ID' => $post_ID,
 					'post_type' => $this->Pto->name,
 					'related_post_type' => $this->RelatedPto->name,
 				), 
@@ -85,22 +85,24 @@ class RelationDraft extends TM\THEWPMODEL {
 		return $this->aRelations[$post_ID];
 	}
 
-	public function delete_relations( $anyway = false ) {
-		foreach( $this->get_relations() as $Rel ) {
+	public function delete_relations( $post_ID = null, $anyway = false ) {
+		if(empty($post_ID)) {
+			$post_ID = $GLOBALS['post']->ID;
+		}
+		foreach( $this->get_relations($post_ID) as $Rel ) {
 			if( !$Rel->userEditable() && !$anyway ) {
 				// TODO: Display Error.
 				return false;
 			}
 		}
-		$post_id = $GLOBALS['post']->ID;
-		foreach( $this->get_relations() as $key => $Rel ) {
+		foreach( $this->get_relations($post_ID) as $key => $Rel ) {
 			$Rel->read( 'ID', 'both' )->delete();
 			if( $Rel->deleted == true ) {
-				unset( $this->aRelations[$post_id][ $key ] );
+				unset( $this->aRelations[$post_ID][ $key ] );
 			}
 		}
-		if (!isset($this->aRelations[$post_id])
-		 || count($this->aRelations[$post_id]) == 0
+		if (!isset($this->aRelations[$post_ID])
+		 || count($this->aRelations[$post_ID]) == 0
 		) {
 			return true;
 		}
