@@ -7,11 +7,6 @@ between any Posttype.
 See [Plugin Page](https://github.com/Xiphe/WP-Relation-Boxes) for details
 
 
-Version
--------
-
-1.0.1
-
 
 Installation
 ------------
@@ -19,7 +14,7 @@ Installation
 1. Install [!THE MASTER](https://github.com/Xiphe/-THE-MASTER)
 2. Upload the WP Relation Boxes plugin directory to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
-4. In your own Plugin or Theme use `\Xiphe\RelationBoxes\Master::register_relation('post', 'n-n', 'page');`
+4. In your own Plugin or Theme use `\Xiphe\RelationBoxes\classes\Master::register_relation('post', 'n-n', 'page');`
 5. See [Plugin Wiki](https://github.com/Xiphe/WP-Relation-Boxes/wiki) for usage details
 
 
@@ -34,6 +29,9 @@ and i will try to answer.
 
 Changelog
 ---------
+
+### 1.1.0
++ compatibility with THEMASTER 3.1
 
 ### 1.0.1
 + Should delete 1-n and n-1 relations correctly on both sides now.

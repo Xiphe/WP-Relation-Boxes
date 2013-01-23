@@ -1,5 +1,5 @@
 <?php
-namespace Xiphe\RelationBoxes;
+namespace Xiphe\relationboxes;
 
 use Xiphe\THEMASTER as TM;
 
@@ -52,7 +52,7 @@ $HTML->s_div($id.'|.ui-widget rb_addexisting misc-pub-section'.$lastClass);
 				'inner' => $subpost->post_title,
 				'attrs' => array(
 					'data-nonce' => wp_create_nonce( 
-						'rb_ajax_listelement_' . $subpost->post_title . $this->get_user( 'ID' )
+						'rb_ajax_listelement_'.$subpost->post_title
 					),
 					'data-inner' => strtolower( $subpost->post_title )
 				)

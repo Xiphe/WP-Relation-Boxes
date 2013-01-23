@@ -1,5 +1,5 @@
 <?php
-namespace Xiphe\RelationBoxes;
+namespace Xiphe\relationboxes;
 
 use Xiphe\THEMASTER as TM;
 
