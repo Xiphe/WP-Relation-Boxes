@@ -2,6 +2,7 @@
 namespace Xiphe\relationboxes\classes;
 
 use Xiphe\THEMASTER\core as TM;
+use Xiphe\relationboxes\models as XRBM;
 
 class Master extends TM\THEWPMASTER {
 	public $singleton = true;
@@ -27,11 +28,10 @@ class Master extends TM\THEWPMASTER {
 		$this->get_instance('RelationController');
 		$this->get_instance('AjaxController');
 		
-		$this->reg_adminLess('rbstyle');
-		// $this->reg_admin_less( 'rb_jqui_autocomplete' );
-		$this->reg_adminJs('autocomplete');
-		$this->reg_adminJs('rbscript');
+		$this->reg_adminCss('ui-wp/jquery-ui-1.10.0.custom.min');
+		$this->reg_adminLess('style');
 		$this->reg_adminJs('combobox');
+		$this->reg_adminJs('script');
 		$this->reg_adminJsVar(
 			'text',
 			array(
@@ -97,7 +97,7 @@ class Master extends TM\THEWPMASTER {
 	public function register_relation($item, $connectionType0, $relatedItem)
 	{
 		$e = explode('-', $connectionType0);
-		new RelationDraft(array(
+		new XRBM\RelationDraft(array(
 			'Pto' => self::get_PTO($item),
 			'RelatedPto' => self::get_PTO($relatedItem),
 			'type' => $e[0],

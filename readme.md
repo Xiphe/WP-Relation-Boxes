@@ -31,7 +31,11 @@ Changelog
 ---------
 
 ### 1.1.0
++ removed jquery ui and images as they are now taken from THEMASTER
 + compatibility with THEMASTER 3.1
++ remake of the js master
++ Hide link is hidden cause the functionality is not present.
++ Translation
 
 ### 1.0.1
 + Should delete 1-n and n-1 relations correctly on both sides now.
@@ -41,21 +45,12 @@ Changelog
 + **First public version**
 
 
-Upgrade Notice
---------------
-
-
-Known Bugs
-----------
-
-+ None ;)
-
-
 Todo
 ----
 
 + Bughunting
 + Direct redirection for new Relations
++ Hide functionality
 
 
 License

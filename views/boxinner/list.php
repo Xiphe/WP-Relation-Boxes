@@ -1,5 +1,5 @@
 <?php
-namespace Xiphe\relationboxes;
+namespace Xiphe\relationboxes\views\boxinner;
 
 use Xiphe\THEMASTER as TM;
 
@@ -59,4 +59,3 @@ $HTML->s_div( 'id=' . $id . '|class=rb_list_wrap' );
 			'|value=' . str_replace( '=', '\=', implode( '&', $serial ) ) 
 		)
 ->end( '#' . $id );
-?>

@@ -1,4 +1,5 @@
-<?php	
+<?php
+namespace Xiphe\relationboxes\views\boxinner;
 	$To = $RelationDraft->RelatedPto;
 	$From = $RelationDraft->Pto;
 	$HTML->hidden(
@@ -6,4 +7,3 @@
 		'|value=' . wp_create_nonce( 'rb_' . $From->rewrite['slug'] . $To->rewrite['slug'] . '_mBQ3^b7s&e!!KKhN')
 	);
 	$HTML->div($To->rewrite['slug'], 'hidden rb_type');
-?>

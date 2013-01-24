@@ -26,7 +26,6 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 			self::$Master = XRB\Master::inst();
 		}
 		
-		// THEDEBUG::inst()->countbug('init');
 		$this->_gen_speakingType();
 		$this->masterKey = $this->Pto->name.$this->RelatedPto->name;
 		if (!isset(self::$Master->aRelationDrafts[$this->masterKey])) {

@@ -1,5 +1,5 @@
 <?php
-namespace Xiphe\relationboxes;
+namespace Xiphe\relationboxes\views\boxinner;
 
 use Xiphe\THEMASTER as TM;
 
@@ -55,4 +55,3 @@ if( isset( $ajaxInsert ) && $ajaxInsert === true ) {
 				) );
 			}
 $HTML->end( '#' . $id );
-?>

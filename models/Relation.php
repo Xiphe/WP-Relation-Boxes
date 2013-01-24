@@ -1,6 +1,9 @@
 <?php
 namespace Xiphe\relationboxes\models;
 
+use Xiphe as X;
+use Xiphe\relationboxes\classes as XRB;
+
 class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	public $ID;
 	public $post_ID;
@@ -80,18 +83,13 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	
 	public function userEditable()
 	{
-		// if( $this->get_post( 'rel', 'post_title' ) == 'Hannes Diem' ) {
-		// 	return false;
-		// }
-		// return false;
-		// $user_ID = Master::inst()->get_user('ID');
-		// if (user_can('edit_others_posts', $user_ID)) {
-		// 	return true;
-		// } elseif($this->get_post('rel', 'post_author') == $user_ID) {
-		// 	return true;
-		// }
-		// return false;
-		return current_user_can('edit_post', $this->get_post('rel', 'ID'));
+		$user_ID = XRB\Master::inst()->get_user('ID');
+		if (user_can('edit_others_posts', $user_ID)) {
+			return true;
+		} elseif($this->get_post('rel', 'post_author') == $user_ID) {
+			return true;
+		}
+		return false;
 	}
 
 	public function userAccessable()

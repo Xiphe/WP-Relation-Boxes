@@ -1,0 +1,109 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Relation Boxes\n"
+"POT-Creation-Date: 2013-01-24 18:03+0100\n"
+"PO-Revision-Date: 2013-01-24 18:13+0100\n"
+"Last-Translator: \n"
+"Language-Team: Xiphe <info@xiphe.net>\n"
+"Language: DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../classes/Master.php:38
+msgid "Please save or update to get further options for this relation."
+msgstr ""
+"Bitte publizieren oder aktualisieren sie um weitere optionen für diese "
+"Verbindung zu bekommen."
+
+#: ../classes/Master.php:39 ../views/boxinner/existingdialoge.php:154
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: ../classes/RelationController.php:116 ../classes/RelationController.php:127
+msgid ""
+"Relation could not be updated because you do not have permissions to do that."
+msgstr ""
+"Verbindung konnte nicht aktualisiert werden weil Sie nicht über die "
+"erforderlichen Rechte verfügen."
+
+#: ../classes/RelationController.php:163
+#, php-format
+msgid "This %1$s will be related to \"%2$s\"."
+msgstr "Diese/r %1$s wird mit \"%2$s\" verbunden werden."
+
+#: ../classes/RelationController.php:187
+#, php-format
+msgid "Unable to delete relation to **%s**. Access denied."
+msgstr ""
+"Die Verbindung zu **%s** konnte nicht aufgelöst werden. Zugang verweigert."
+
+#: ../views/boxinner/existingdialoge.php:13
+#, php-format
+msgid "Add existing %s"
+msgstr "Existierende/n %s hinzufügen"
+
+#: ../views/boxinner/existingdialoge.php:17
+#, php-format
+msgid "Related %s:"
+msgstr "Verbundene %s"
+
+#: ../views/boxinner/existingdialoge.php:26
+msgid " - none - "
+msgstr " - keine - "
+
+#: ../views/boxinner/existingdialoge.php:116
+#, php-format
+msgid ""
+"You must not edit this Relation because you are not allowed to edit "
+"'%1$s'. \n"
+"%2$s can only handle one %3$s. So if you could change '%1$s' \n"
+"to another %3$s the relation on '%1$s' to this %4$s would be deleted and \n"
+"the apperance of '%1$s' eventually would change, which should be a "
+"decision \n"
+"made by %5$s, the autor of '%1$s'."
+msgstr ""
+"Sie dürfen diese Verbindung nicht editieren weil es Ihnen nicht erlaubt ist "
+"'%1$s' zu editieren. \n"
+"%2$s kann nur mit einem einzigen %3$s umgehen. Wenn Sie also '%1$s' zu einem "
+"anderen %3$sändern würden, würde die Verbindung von '%1$s' zu diesem %4$s "
+"gelöscht werdenund das aussehen von  '%1$s' würde sich ggf. ändern.Das "
+"sollte eine entscheidung von %5$s, dem autor von '%1$s' sein."
+
+#: ../views/boxinner/existingdialoge.php:133
+msgid "Related"
+msgstr "Verbunden"
+
+#: ../views/boxinner/listitem.php:21 ../views/boxinner/typeonedetail.php:18
+msgid "Edit"
+msgstr "Editieren"
+
+#: ../views/boxinner/listitem.php:26 ../views/boxinner/listitem.php:46
+#: ../views/boxinner/listitem.php:49 ../views/boxinner/typeonedetail.php:24
+msgid "Hide"
+msgstr "Verstecken"
+
+#: ../views/boxinner/listitem.php:36 ../views/boxinner/listitem.php:41
+#: ../views/boxinner/listitem.php:51 ../views/boxinner/listitem.php:54
+#: ../views/boxinner/typeonedetail.php:34
+#: ../views/boxinner/typeonedetail.php:39
+msgid "Release"
+msgstr "Lösen"
+
+#: ../views/boxinner/listitem.php:48
+msgid "hide"
+msgstr "verstecken"
+
+#: ../views/boxinner/listitem.php:53
+msgid "release"
+msgstr "lösen"
+
+#: ../views/boxinner/typeonedetail.php:42
+msgid "Unsaved..."
+msgstr "Ungespeichert"

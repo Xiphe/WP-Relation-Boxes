@@ -1,10 +1,11 @@
 <?php
-namespace Xiphe\relationboxes;
+namespace Xiphe\relationboxes\views\boxinner;
 
-use Xiphe\THEMASTER as TM;
+use Xiphe as X;
 
-	$To = $RelationDraft->RelatedPto;
-	$Relation = TM\THETOOLS::rget( $RelationDraft->get_relations(), '0');
+$To = $RelationDraft->RelatedPto;
+$Relation = X\THETOOLS::rget( $RelationDraft->get_relations(), '0');
+
 if( is_object( $Relation ) ) {
 	$id = '#rb_' . $To->rewrite['slug'] . '_edit';
 	// $RBMaster->debug( $Relation );
