@@ -13,8 +13,12 @@ class RelationController extends TM\THEWPMASTER {
 	
 	protected $actions_ = array(
 		'wpinit' => 'init',
-		'save_post|999'
+		'save_post|999',
+		'before_delete_post|2',
+		'delete_post'
 	);
+
+	private $_deleteRels = array();
 
 	public function init()
 	{
@@ -166,6 +170,52 @@ class RelationController extends TM\THEWPMASTER {
 		);
 		$this->set_adminMessage($msg, 'info');
 	}
+
+	public function before_delete_post($postID)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT *
+			 FROM ".Master::sGet_table_name()."
+			 WHERE post_ID = %s
+			",
+			$postID
+		);
+
+		$result = $wpdb->get_results($query);
+
+		foreach ($result as $i => $relation) {
+			$Relation = new XRBM\Relation(array( 
+				'post_ID' => intval($relation->post_ID),
+				'related_post_ID' => intval($relation->related_post_ID)
+			));
+
+			if (!$Relation->userEditable())  {
+				$this->set_adminMessage(
+					sprintf(
+						__('Unable to delete **%s**. Access denied.', 'relationboxes'),
+						$Relation->get_post('this', 'post_title')
+					),
+					'error',
+					true
+				);
+
+				$this->_deleteRels[$postID] = array();
+				return false;	
+			} else {
+				$this->_deleteRels[$postID][] = $Relation;
+			}
+		}
+	}
+
+	public function delete_post($postID) {
+		if (isset($this->_deleteRels[$postID])) {
+			foreach($this->_deleteRels[$postID] as $Relation) {
+				$Relation->read('ID', 'both')->delete();
+			}
+		}
+	} 
 
 	private function _release($data)
 	{

@@ -30,6 +30,9 @@ and i will try to answer.
 Changelog
 ---------
 
+### 1.1.1
++ better handling of post deletion and -trash actions
+
 ### 1.1.0
 + removed jquery ui and images as they are now taken from THEMASTER
 + compatibility with THEMASTER 3.1

@@ -14,6 +14,7 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	public $hidden = false;
 
 	public $deleted = false;
+	public $unavailable = false;
 	
 	public $post;
 	public $related_post;
@@ -121,6 +122,7 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 				'related_post' => $this->get_post('rel', $path)
 			);
 		}
+
 		// set IDs an keys
 		if ($post == 'rel') {
 			$target = 'related_post';
@@ -131,8 +133,14 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 		}
 
 		// check if exists
-		if (!$this->$target) {
-			$this->$target = get_post($post_ID);
+		if (null === $this->$target) {
+			$post = get_post($post_ID);
+			if ($post->post_status !== 'publish') {
+				$this->unavailable = true;
+				$this->$target = false;
+				return false;
+			}
+			$this->$target = $post;
 		}
 
 		// return all or specific key

@@ -74,7 +74,7 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 		);
 	}
 	
-	public function get_relations($post_ID = null)
+	public function get_relations($post_ID = null, $addUnavailable = false)
 	{
 		if (empty($post_ID)) {
 			$post_ID = $GLOBALS['post']->ID;
@@ -91,12 +91,16 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 				'ASC',
 				array( 'get_post' => 'rel' )
 			) as $Rel) {
+				if (!$addUnavailable && $Rel->unavailable) {
+					continue;
+				}
 				$this->aRelations[$Rel->post_ID][] = $Rel;
 			}
 		}
 		if (!isset($this->aRelations[$post_ID])) {
 			return array();
 		}
+
 		return $this->aRelations[$post_ID];
 	}
 
