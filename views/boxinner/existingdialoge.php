@@ -28,7 +28,7 @@ $args = array('null' => __(' - none - ', 'relationboxes'));
 /*
  * Get all potential sub-posts and loop through them.
  */
-$subposts = get_posts('post_type='.$To->rewrite['slug']);
+$subposts = get_posts('posts_per_page=-1&post_type='.$To->rewrite['slug']);
 foreach ($subposts as $subpost) {
 
 	/*

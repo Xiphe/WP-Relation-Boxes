@@ -30,6 +30,10 @@ and i will try to answer.
 Changelog
 ---------
 
+### 1.1.2
++ fixed bug where authors wont have access to relations.
++ All Relations will now be available through Add Existing dialog.
+
 ### 1.1.1
 + better handling of post deletion and -trash actions
 

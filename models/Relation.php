@@ -84,8 +84,7 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	
 	public function userEditable()
 	{
-		$user_ID = XRB\Master::inst()->get_user('ID');
-		if (user_can('edit_others_posts', $user_ID)) {
+		if (current_user_can('edit_others_posts')) {
 			return true;
 		} elseif($this->get_post('rel', 'post_author') == $user_ID) {
 			return true;
