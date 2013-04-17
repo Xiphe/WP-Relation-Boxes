@@ -19,7 +19,7 @@ if ($RelationDraft->relatedType == 'n' ||
 	$selected = X\THETOOLS::rget($RelationDraft->get_relations(), '0|related_post|ID');
 }
 
-$id = '#rb_'.$To->rewrite['slug'].'_addexisting';
+$id = '#rb_'.$To->name.'_addexisting';
 
 $HTML->s_div($id.'|.ui-widget rb_addexisting misc-pub-section'.$lastClass);
 	
@@ -28,8 +28,12 @@ $args = array('null' => __(' - none - ', 'relationboxes'));
 /*
  * Get all potential sub-posts and loop through them.
  */
-$subposts = get_posts('posts_per_page=-1&post_type='.$To->rewrite['slug']);
+$subposts = get_posts('posts_per_page=-1&post_type='.$To->name);
 foreach ($subposts as $subpost) {
+
+	if (isset($_GET['post']) && $subpost->ID == $_GET['post']) {
+		continue;
+	}
 
 	/*
 	 * Build a new Relation.
@@ -96,8 +100,8 @@ foreach ($subposts as $subpost) {
 
 $selArgs = array(
 	'class' => 'rb_addexisting_select',
-	'id' => ($slctid = 'rb_'.$To->rewrite['slug'].'_addexisting_select'),
-	'name' => 'rb_'.$To->rewrite['slug'].'_addexisting[]',
+	'id' => ($slctid = 'rb_'.$To->name.'_addexisting_select'),
+	'name' => 'rb_'.$To->name.'_addexisting[]',
 );
 
 if ($RelationDraft->relatedType == 'n') {

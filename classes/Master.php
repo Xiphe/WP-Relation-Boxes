@@ -13,7 +13,10 @@ class Master extends TM\THEWPMASTER {
 
 	protected $actions_ = array(
 		'wpinit' => 'init',
-		'admin_head'
+		'admin_head',
+		// 'found_posts',
+		'pre_get_posts|99',
+		'posts_selection|5'
 	);
 
 	public function init()
@@ -31,7 +34,7 @@ class Master extends TM\THEWPMASTER {
 		$this->reg_adminCss('ui-wp/jquery-ui-1.10.0.custom.min');
 		$this->reg_adminLess('style');
 		$this->reg_adminJs('combobox');
-		$this->reg_adminJs('script');
+		$this->reg_adminJs('Master');
 		$this->reg_adminJsVar(
 			'text',
 			array(
@@ -79,8 +82,7 @@ class Master extends TM\THEWPMASTER {
 		update_option("rb_db_version", "1.1");
 	}
 	
-
-	public function get_PTO($slug)
+	public static function get_PTO($slug)
 	{
 		if (!isset(self::$PTO[$slug])) {
 			$PTO = get_post_type_object($slug);
@@ -93,8 +95,8 @@ class Master extends TM\THEWPMASTER {
 		}
 		return self::$PTO[$slug];
 	}
-	
-	public function register_relation($item, $connectionType0, $relatedItem)
+
+	public static function register_relation($item, $connectionType0, $relatedItem)
 	{
 		$e = explode('-', $connectionType0);
 		new XRBM\RelationDraft(array(
@@ -104,22 +106,16 @@ class Master extends TM\THEWPMASTER {
 			'relatedType' => $e[1]
 		));
 	}
-	
-	// public function add_meta_boxes() {
-// 		
-		// foreach($this->aRelationDrafts as $box) {
-			// $this->diebug();
-			// add_meta_box( 
-				// 'rb_'.$box['id'], 
-				// $box['title'],
-				// array($this, 'box_inner'),
-				// $box['page'],
-				// $box['context'],
-				// $box['priority'],
-				// $box['args']
-			// );
-		// }
-	// }
+
+	public function getRelationDrafts()
+	{
+		return self::$aRelationDrafts;
+	}
+
+	public function setRelationDraft($key, $draft)
+	{
+		self::$aRelationDrafts[$key] = $draft;
+	}
 	
 	public function admin_head() {
 		$this->view('adminhead');
@@ -140,5 +136,219 @@ class Master extends TM\THEWPMASTER {
 		$this->view('boxinner/nonce', $args);
 		$this->view('boxinner/clear');
 	}
-	
-} ?>
+
+	/**
+	 * Append filters if posts relations should be appended inline.
+	 * 
+	 * @param  WP_Query $query
+	 * @return null
+	 */
+	public function pre_get_posts($query)
+	{
+		if (isset($query->query_vars['rb_inline_relations'])) {
+			$query->is_singular = 0;
+			if ($query->is_page &&
+				empty($query->queried_object_id) &&
+				get_option('show_on_front') === 'page'
+			) {
+				$query->queried_object_id = intval(get_option('page_on_front'));
+				$query->queried_object = get_post($query->queried_object_id);
+				$query->query_vars['pagename'] = $query->queried_object->post_name;
+			}
+			add_filter('nav_menu_css_class', array($this, 'tmp_nav_menu_css_class'), 10, 2);
+			add_filter('posts_join', array($this, 'tmp_posts_join'), 9);
+			add_filter('posts_where', array($this, 'tmp_posts_where'), 9);
+			add_filter('posts_orderby', array($this, 'tmp_posts_orderby'), 9);
+			add_filter('posts_groupby', array($this, 'tmp_posts_groupby'), 9);
+			add_filter('post_limits', array($this, 'tmp_post_limits'), 9);
+			add_filter('query', array($this, 'tmp_query'), 9);
+		}
+	}
+
+	public function posts_selection($query)
+	{
+		global $wp_query;
+
+		if (isset($wp_query->query_vars['rb_inline_relations'])) {
+			remove_filter('posts_join', array($this, 'tmp_posts_join'), 9);
+			remove_filter('posts_where', array($this, 'tmp_posts_where'), 9);
+			remove_filter('posts_orderby', array($this, 'tmp_posts_orderby'), 9);
+			remove_filter('posts_groupby', array($this, 'tmp_posts_groupby'), 9);
+			remove_filter('post_limits', array($this, 'tmp_post_limits'), 9);
+			remove_filter('query', array($this, 'tmp_query'), 9);
+		}
+	}
+
+	public function tmp_query($query)
+	{
+		debug($query);
+
+		return $query;
+	}
+
+	public function tmp_posts_join($join)
+	{
+		global $wp_query, $wpdb;
+
+		$table = self::sGet_table_name();
+
+		$join .= "LEFT JOIN $table AS rb_post_relations
+            ON rb_post_relations.related_post_ID = $wpdb->posts.ID
+
+            LEFT JOIN $wpdb->posts as rb_related_post
+            ON rb_post_relations.related_post_ID = $wpdb->posts.ID
+            AND rb_post_relations.post_ID = rb_related_post.ID";
+
+
+		return $join;
+	}
+
+	public function tmp_posts_where($where)
+	{
+		global $wp_query, $wpdb;
+
+		if (isset($wp_query->query_vars['rb_relation_type']) &&
+			post_type_exists(($rel_type = $wp_query->query_vars['rb_relation_type']))
+		) {
+			$and2 = "rb_post_relations.related_post_type = '$rel_type'";
+		} else {
+			$and2 = "rb_post_relations.related_post_type != '$2'";
+		}
+
+		$sub_where = str_replace($wpdb->posts.'.', 'rb_related_posts2.', $where);
+
+		$where = preg_replace(
+			"/$wpdb->posts.(ID|post_type)[\s]?=[\s]?['\"]?([^\s'\"]+)['\"]?[\s]?/",
+			"(
+               $wpdb->posts.$1 = '$2'
+               OR ( $wpdb->posts.ID = rb_post_relations.related_post_ID
+                  AND $and2
+                  AND rb_post_relations.post_ID IN (
+                     SELECT rb_related_posts2.ID
+                     FROM $wpdb->posts as rb_related_posts2
+                     WHERE 1 = 1 $sub_where
+                  )
+               )
+            )",
+			$where
+		);
+
+		return $where;
+	}
+
+	public function tmp_posts_orderby($orderby)
+	{
+		global $wpdb, $wp_query;
+
+		$rel_order = '';
+		if (isset($wp_query->query_vars['rb_relation_order'])) {
+			$rel_order = strtoupper($wp_query->query_vars['rb_relation_order']);
+		}
+
+		if (!in_array($rel_order, array('DESC', 'ASC'))) {
+			$rel_order = 'ASC';
+		}
+
+		$orderby = preg_replace(
+			"/$wpdb->posts\.([^\s]+)[\s]+(ASC|DESC)/",
+			"IF(rb_post_relations.post_order IS NOT NULL, rb_related_post.$1, $wpdb->posts.$1) $2,
+               rb_post_relations.post_order $rel_order ",
+			$orderby
+		);
+
+		return $orderby;
+	}
+
+	public function tmp_post_limits($limit)
+	{
+		global $wp_query;
+
+		if (empty($limit)) {
+			$limit .= 'LIMIT '.($wp_query->query_vars['paged']*$wp_query->query_vars['posts_per_page']).
+			 ','.$wp_query->query_vars['posts_per_page'].' ';
+		}
+
+		return $limit;
+	}
+
+	public function tmp_posts_groupby($groupby)
+	{
+		global $wpdb;
+
+		$groupby .= "$wpdb->posts.ID ";
+
+		return $groupby;
+	}
+
+	public function tmp_nav_menu_css_class($classes, $menu_item)
+	{
+		global $wp_query;
+
+		if (!empty($wp_query->queried_object_id) &&
+			$wp_query->queried_object_id === intval($menu_item->object_id)
+		) {
+			$classes[] = 'current-menu-item';
+		}
+
+		return $classes;
+	}
+
+	public function found_posts($query)
+	{
+		global $wp_query, $wpdb;
+
+		if(isset($wp_query->query_vars['rb_add_relations'])) {
+			$IDs = array();
+
+			$table = self::sGet_table_name();
+			$limit = intval($wp_query->query_vars['rb_add_relations']);
+			$limit = ($limit > 0 ? $limit : 5);
+			$page = isset($wp_query->query_vars['rb_page']) ? $wp_query->query_vars['rb_page'] : 0;
+			$type = false;
+			if (isset($wp_query->query_vars['rb_type'])) {
+				$type = $wp_query->query_vars['rb_type'];
+			}
+			$query = '';
+			$rel_links = array();
+
+			diebug($wp_query);
+
+			array_map(function (&$post) use (&$query, &$rel_links, $wpdb, $table, $limit, $page, $type) {
+				$rel_links[$post->ID] = &$post;
+
+				$q = "( SELECT posts.*,
+				               rel.post_ID as rel_parent,
+				               rel.post_order as rel_order
+			          FROM $wpdb->posts as posts
+			          LEFT JOIN $table as rel ON rel.post_ID = %d
+			          WHERE posts.ID = rel.related_post_ID
+			          ".($type ? "AND posts.post_type = %s\n" : '').
+			          "ORDER BY rel.post_order ASC
+			          LIMIT %d,%d )
+					  UNION ALL\n";
+
+				$vals = array($q, $post->ID);
+				if ($type !== false) {
+					$vals[] = $type;
+				}
+				$vals[] = $page;
+				$vals[] = $limit;
+
+				$query .= call_user_func_array(array($wpdb, 'prepare'), $vals);
+			}, $wp_query->posts);
+
+			$query = trim($query, "UNION ALL\n");
+
+			$results = $wpdb->get_results($query);
+
+			array_map(function ($rel) use (&$rel_links) {
+				if (!isset($rel_links[$rel->rel_parent]->rb_relations) ||
+					!is_array($rel_links[$rel->rel_parent]->rb_relations)
+				) {
+					$rel_links[$rel->rel_parent]->rb_relations = array();
+				}
+				$rel_links[$rel->rel_parent]->rb_relations[$rel->rel_order] = $rel;
+			}, $results);
+		}
+	}
+}

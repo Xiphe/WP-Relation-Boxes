@@ -107,7 +107,7 @@ class RelationController extends TM\THEWPMASTER {
 
 			// Get the Relation Draft
 			$Draft = Master::inst()->aRelationDrafts[ 
-				$_POST['post_type'].$postvar['_pto']->rewrite['slug']
+				$_POST['post_type'].$postvar['_pto']->name
 			];
 
 			// If relation is type 1 try to delete the current relation.
@@ -146,7 +146,7 @@ class RelationController extends TM\THEWPMASTER {
 							'post_ID' => intval($_POST['post_ID']),
 							'related_post_ID' => $addex,
 							'post_type' => $_POST['post_type'],
-							'related_post_type' => $postvar['_pto']->rewrite['slug'],
+							'related_post_type' => $postvar['_pto']->name,
 							'post_order' => $key+1,
 						));
 						// $this->debug( $Relation );

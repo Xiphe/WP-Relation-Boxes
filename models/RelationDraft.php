@@ -28,9 +28,11 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 		
 		$this->_gen_speakingType();
 		$this->masterKey = $this->Pto->name.$this->RelatedPto->name;
-		if (!isset(self::$Master->aRelationDrafts[$this->masterKey])) {
-			self::$Master->aRelationDrafts[$this->masterKey] = $this;
-		} else {
+		$drafts = self::$Master->getRelationDrafts();
+		
+		if (!isset($drafts[$this->masterKey])) {
+			self::$Master->setRelationDraft($this->masterKey, $this);
+		} elseif($this->Pto->name !== $this->RelatedPto->name) {
 			throw new \ErrorException(
 				sprintf(
 					'ERROR: Multiple initiations for a relation between %s and %s.',
@@ -40,6 +42,8 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 				1
 			);
 			return false;
+		} else {
+			return;
 		}
 
 		add_action('add_meta_boxes', array($this, 'add_meta_box'));
@@ -49,11 +53,11 @@ class RelationDraft extends \Xiphe\THEMASTER\core\THEWPMODEL {
 				'Pto' => $this->RelatedPto,
 				'RelatedPto' => $this->Pto,
 				'type' => $this->relatedType,
-				'relatedType' => $this->type,
+				'relatedType' => $this->type
 			));
 		} else {
 			$key = $this->RelatedPto->name.$this->Pto->name;
-			$this->Mirror = self::$Master->aRelationDrafts[$key];
+			$this->Mirror = $drafts[$key];
 		}
 	}
 	

@@ -10,7 +10,7 @@ if( isset( $ajaxInsert ) && $ajaxInsert === true ) {
 }
 	$HTML->s_li( array(
 		'id' => $id,
-		'class' => $unsavedClass . 'rb_listentry rb_' . $To->rewrite['slug'] . '_listentry' . $sep,
+		'class' => $unsavedClass . 'rb_listentry rb_' . $To->name . '_listentry' . $sep,
 		'data-id' => $related->related_post_ID
 	))
 		->span( null, 'rb_drag_handler' )

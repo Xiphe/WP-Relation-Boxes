@@ -7,7 +7,7 @@ $To = $RelationDraft->RelatedPto;
 $Relation = X\THETOOLS::rget( $RelationDraft->get_relations(), '0');
 
 if( is_object( $Relation ) ) {
-	$id = '#rb_' . $To->rewrite['slug'] . '_edit';
+	$id = '#rb_' . $To->name . '_edit';
 	// $RBMaster->debug( $Relation );
 	$HTML->s_div( $id .
 		'|class=ui-widget misc-pub-section misc-pub-section-last rb_typeoneentry' )

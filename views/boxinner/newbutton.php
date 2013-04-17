@@ -7,13 +7,13 @@ if( $RelationDraft->relatedType != '1'
 )  {
 	$To = $RelationDraft->RelatedPto;
 	$HTML->s_div( array(
-			'id' => 'rb_' . $To->rewrite['slug'] . '_addnew',
+			'id' => 'rb_' . $To->name . '_addnew',
 			'class' => 'rb_addnew misc-pub-section'
 		) )
 		->a( $To->labels->add_new_item,
 			array(
 				'href' => get_bloginfo('wpurl') . '/wp-admin/post-new.php?post_type=' . 
-					$To->rewrite['slug'] . '&related_to=' . $post->ID,
+					$To->name . '&related_to=' . $post->ID,
 				'class' => 'button',
 				'title' => $To->labels->add_new_item
 			)

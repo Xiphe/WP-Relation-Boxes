@@ -1,16 +1,17 @@
 <?php
 namespace Xiphe\relationboxes\views\boxinner;
 
+use Xiphe\relationboxes\models\Relation;
 use Xiphe\THEMASTER as TM;
 
 $To = $RelationDraft->RelatedPto;
 
-$id = 'rb_' . $To->rewrite['slug'] . '_list_wrap';
+$id = 'rb_' . $To->name . '_list_wrap';
 $HTML->s_div( 'id=' . $id . '|class=rb_list_wrap' );
 	$lis = array();
 	$serial = array();
 
-	$HTML->sg_ul( '#rb_' . $To->rewrite['slug'] . '_list|.rb_list' );
+	$HTML->sg_ul( '#rb_' . $To->name . '_list|.rb_list' );
 	$relations = $RelationDraft->get_relations();
 	if (isset($_GET['related_to'])) {
 		$found = false;
@@ -55,7 +56,7 @@ $HTML->s_div( 'id=' . $id . '|class=rb_list_wrap' );
 	}
 	
 	$HTML->end()
-		 ->hidden( 'name=rb_' . $To->rewrite['slug'] . '_serial|class=rb_serial' .
+		 ->hidden( 'name=rb_' . $To->name . '_serial|class=rb_serial' .
 			'|value=' . str_replace( '=', '\=', implode( '&', $serial ) ) 
 		)
 ->end( '#' . $id );
