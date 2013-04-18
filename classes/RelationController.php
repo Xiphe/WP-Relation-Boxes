@@ -27,8 +27,14 @@ class RelationController extends TM\THEWPMASTER {
 	public function wpinit()
 	{
 		if (is_admin()) {
-			if (isset($_GET['rb_release']) && !empty($_GET['rb_release'])) {
+			if (!empty($_GET['rb_release'])) {
 				$this->_release(X\THETOOLS::filter_getDataBy('rb'));
+			}
+			if (!empty($_GET['rb_hide'])) {
+				$this->_hide(X\THETOOLS::filter_getDataBy('rb'));
+			}
+			if (!empty($_GET['rb_show'])) {
+				$this->_show(X\THETOOLS::filter_getDataBy('rb'));
 			}
 			if ($GLOBALS['pagenow'] == 'post-new.php' &&
 				isset($_GET['related_to']) &&
@@ -146,15 +152,10 @@ class RelationController extends TM\THEWPMASTER {
 							'post_ID' => intval($_POST['post_ID']),
 							'related_post_ID' => $addex,
 							'post_type' => $_POST['post_type'],
-							'related_post_type' => $postvar['_pto']->name,
-							'post_order' => $key+1,
+							'related_post_type' => $postvar['_pto']->name
 						));
-						// $this->debug( $Relation );
-						$Relation->read('ID');
-
-						// $this->diebug( $Relation );
-
-						$Relation->save();
+						
+						$Relation->read('*')->set('post_order', $key+1)->save();
 					}
 				}
 			}
@@ -243,14 +244,55 @@ class RelationController extends TM\THEWPMASTER {
 			return false;	
 		}
 
-		$url = $this->get_currentUrl();
-		X\THETOOLS::filter_urlQuery($url, array('rb_release', 'rb__nonce'));
-
 		$Relation->read('*', 'both');
 		$Relation->delete();
 
+		$url = $this->get_currentUrl(array(), array('rb_release', 'rb__nonce'));
 		header('Location: '.$url);
 		exit();
 	}
 	
+	private function _hide($data)
+	{
+		
+		if (!wp_verify_nonce(
+			$data['_nonce'], 
+			'rb_hide_'.$data['hide'].'from'.$_GET['post']
+		)) {
+			return false;
+		}
+
+		$Relation = new XRBM\Relation(array( 
+			'post_ID' => intval($_GET['post']),
+			'related_post_ID' => intval($data['hide'])
+		));
+
+		$Relation->read()->set('hidden', true)->save();
+
+		$url = $this->get_currentUrl(array(), array('rb_hide', 'rb__nonce'));
+		header('Location: '.$url);
+		exit();
+	}
+
+	private function _show($data)
+	{
+		
+		if (!wp_verify_nonce(
+			$data['_nonce'], 
+			'rb_show_'.$data['show'].'from'.$_GET['post']
+		)) {
+			return false;
+		}
+
+		$Relation = new XRBM\Relation(array( 
+			'post_ID' => intval($_GET['post']),
+			'related_post_ID' => intval($data['show'])
+		));
+
+		$Relation->read()->set('hidden', false)->save();
+
+		$url = $this->get_currentUrl(array(), array('rb_show', 'rb__nonce'));
+		header('Location: '.$url);
+		exit();
+	}
 }

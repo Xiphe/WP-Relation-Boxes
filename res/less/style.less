@@ -1,4 +1,4 @@
-// globals: @baseUrl, @home, @masterRes, @uploadUrl, @wpurl
+// globals: @baseUrl, @home, @img, @masterRes, @res, @uploadUrl, @wpurl
 // Have fun, writing LESS!
 
 
@@ -36,8 +36,10 @@ li.rb_listentry {
 	&.rb_alt {
 		background: #f3f3f3;
 	}
-	&.unsaved span {
-		opacity: 0.5;
+	&.rb_unsaved, &.rb_hidden {
+		span {
+			opacity: 0.5;
+		}
 	}
 	.rb_list-title {
 		font-weight: bold;
@@ -181,9 +183,6 @@ li.rb_listentry, .rb_typeoneentry {
 	height: 24px;
     margin: 2px 0 0 5px;
     width: 24px;
-}
-.rb_submithide {
-	display: none;
 }
 .js #post-body .misc-pub-section.rb_addexisting {
 	max-width: 50%;

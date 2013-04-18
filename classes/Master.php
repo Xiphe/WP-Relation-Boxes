@@ -107,6 +107,40 @@ class Master extends TM\THEWPMASTER {
 		));
 	}
 
+	public static function has_relations($post_ID, $related_post_types = '', $and = '')
+	{
+		global $wpdb;
+
+		$table = self::sGet_table_name();
+
+		if (!empty($related_post_types)) {
+			if (is_string($related_post_types)) {
+				$related_post_types = array($related_post_types);
+			}
+
+			foreach ($related_post_types as $key => $related_post_type) {
+				if (!post_type_exists($related_post_type)) {
+					unset($related_post_types[$key]);
+				} else {
+					$related_post_types[$key] = "'$related_post_type'";
+				}
+			}
+
+			if (!empty($related_post_types)) {
+				$and .= ' AND related_post_type IN ('.implode(',', $related_post_types).')';
+			}
+		}
+
+		return intval($wpdb->get_var($wpdb->prepare(
+			"SELECT COUNT(*)
+			 FROM $table
+			 WHERE post_ID = %d
+			 $and
+			 ",
+			$post_ID
+		)));
+	}
+
 	public function getRelationDrafts()
 	{
 		return self::$aRelationDrafts;
@@ -146,6 +180,7 @@ class Master extends TM\THEWPMASTER {
 	public function pre_get_posts($query)
 	{
 		if (isset($query->query_vars['rb_inline_relations'])) {
+			$query->is_single = 0;
 			$query->is_singular = 0;
 			if ($query->is_page &&
 				empty($query->queried_object_id) &&
@@ -156,12 +191,13 @@ class Master extends TM\THEWPMASTER {
 				$query->query_vars['pagename'] = $query->queried_object->post_name;
 			}
 			add_filter('nav_menu_css_class', array($this, 'tmp_nav_menu_css_class'), 10, 2);
+
 			add_filter('posts_join', array($this, 'tmp_posts_join'), 9);
 			add_filter('posts_where', array($this, 'tmp_posts_where'), 9);
 			add_filter('posts_orderby', array($this, 'tmp_posts_orderby'), 9);
 			add_filter('posts_groupby', array($this, 'tmp_posts_groupby'), 9);
 			add_filter('post_limits', array($this, 'tmp_post_limits'), 9);
-			add_filter('query', array($this, 'tmp_query'), 9);
+			// add_filter('query', array($this, 'tmp_query'), 9);
 		}
 	}
 
@@ -175,7 +211,6 @@ class Master extends TM\THEWPMASTER {
 			remove_filter('posts_orderby', array($this, 'tmp_posts_orderby'), 9);
 			remove_filter('posts_groupby', array($this, 'tmp_posts_groupby'), 9);
 			remove_filter('post_limits', array($this, 'tmp_post_limits'), 9);
-			remove_filter('query', array($this, 'tmp_query'), 9);
 		}
 	}
 
@@ -183,6 +218,8 @@ class Master extends TM\THEWPMASTER {
 	{
 		debug($query);
 
+		remove_filter('query', array($this, 'tmp_query'), 9);
+		
 		return $query;
 	}
 
@@ -194,6 +231,12 @@ class Master extends TM\THEWPMASTER {
 
 		$join .= "LEFT JOIN $table AS rb_post_relations
             ON rb_post_relations.related_post_ID = $wpdb->posts.ID
+            AND rb_post_relations.post_ID IN (
+				SELECT ID
+				FROM wp_posts
+				WHERE 1 = 1
+				$this->tmp_where
+			)
 
             LEFT JOIN $wpdb->posts as rb_related_post
             ON rb_post_relations.related_post_ID = $wpdb->posts.ID
@@ -207,6 +250,8 @@ class Master extends TM\THEWPMASTER {
 	{
 		global $wp_query, $wpdb;
 
+		$this->tmp_where = $where;
+
 		if (isset($wp_query->query_vars['rb_relation_type']) &&
 			post_type_exists(($rel_type = $wp_query->query_vars['rb_relation_type']))
 		) {
@@ -218,7 +263,7 @@ class Master extends TM\THEWPMASTER {
 		$sub_where = str_replace($wpdb->posts.'.', 'rb_related_posts2.', $where);
 
 		$where = preg_replace(
-			"/$wpdb->posts.(ID|post_type)[\s]?=[\s]?['\"]?([^\s'\"]+)['\"]?[\s]?/",
+			"/$wpdb->posts.(ID|post_type|post_name)[\s]?=[\s]?['\"]?([^\s'\"]+)['\"]?[\s]?/",
 			"(
                $wpdb->posts.$1 = '$2'
                OR ( $wpdb->posts.ID = rb_post_relations.related_post_ID
@@ -232,6 +277,10 @@ class Master extends TM\THEWPMASTER {
             )",
 			$where
 		);
+
+		if (!isset($wp_query->query_vars['rb_include_hidden'])) {
+			$where .= ' AND (rb_post_relations.hidden = 0 || rb_post_relations.hidden IS NULL)';
+		}
 
 		return $where;
 	}
@@ -251,7 +300,7 @@ class Master extends TM\THEWPMASTER {
 
 		$orderby = preg_replace(
 			"/$wpdb->posts\.([^\s]+)[\s]+(ASC|DESC)/",
-			"IF(rb_post_relations.post_order IS NOT NULL, rb_related_post.$1, $wpdb->posts.$1) $2,
+			"IF(rb_post_relations.post_order IS NULL, $wpdb->posts.$1, rb_related_post.$1) $2,
                rb_post_relations.post_order $rel_order ",
 			$orderby
 		);

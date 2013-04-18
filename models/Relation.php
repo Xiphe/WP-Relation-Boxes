@@ -43,7 +43,6 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 		
 	}
 	
-
 	public function after_read($args = null)
 	{
 		if ($args == 'both' && $this->_is_mirror === false) {
