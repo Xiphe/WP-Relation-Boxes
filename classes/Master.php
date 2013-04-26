@@ -141,6 +141,48 @@ class Master extends TM\THEWPMASTER {
 		)));
 	}
 
+	public static function get_relations(
+		$post_ID,
+		$related_post_types = '',
+		$and = ''
+	) {
+		global $wpdb;
+
+		$table = self::sGet_table_name();
+
+		if (!empty($related_post_types)) {
+			if (is_string($related_post_types)) {
+				$related_post_types = array($related_post_types);
+			}
+
+			foreach ($related_post_types as $key => $related_post_type) {
+				if (!post_type_exists($related_post_type)) {
+					unset($related_post_types[$key]);
+				} else {
+					$related_post_types[$key] = "'$related_post_type'";
+				}
+			}
+
+			if (!empty($related_post_types)) {
+				$and .= ' AND related_post_type IN ('.implode(',', $related_post_types).')';
+			}
+		}
+
+		return $wpdb->get_results($wpdb->prepare(
+			"SELECT pst.*
+			 FROM $wpdb->posts as pst
+			 LEFT JOIN $table as rel
+			 	ON rel.post_ID = %d
+			 	$and
+
+			 WHERE pst.post_status = 'publish'
+			 AND pst.ID = rel.related_post_ID
+			 ORDER BY rel.post_order ASC
+			 ",
+			$post_ID
+		));
+	}
+
 	public function getRelationDrafts()
 	{
 		return self::$aRelationDrafts;
