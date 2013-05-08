@@ -2,7 +2,7 @@
 namespace Xiphe\relationboxes\models;
 
 use Xiphe as X;
-use Xiphe\relationboxes\classes as XRB;
+use Xiphe\relationboxes\classes\Master;
 
 class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	public $ID;
@@ -76,7 +76,7 @@ class Relation extends \Xiphe\THEMASTER\core\THEWPMODEL {
 	{
 		if (!$this->_Draft) {
 			$key = $this->get_post('this', 'post_type').$this->get_post('rel', 'post_type');
-			$this->_Draft = \Xiphe\relationboxes\classes\Master::inst()->aRelationDrafts[$key];
+			$this->_Draft = Master::$aRelationDrafts[$key];
 		}
 		return $this->_Draft;
 	}

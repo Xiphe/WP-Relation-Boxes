@@ -1,4 +1,4 @@
-// globals: @baseUrl, @home, @img, @masterRes, @res, @uploadUrl, @wpurl
+// globals: @baseUrl, @home, @img, @masterRes, @masterTmp, @res, @tmp, @uploadUrl, @wpurl
 // Have fun, writing LESS!
 
 
@@ -33,6 +33,8 @@ li.rb_listentry {
 	height: 18px;
 	line-height: 17px;
 	margin: 0px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	&.rb_alt {
 		background: #f3f3f3;
 	}
@@ -184,9 +186,38 @@ li.rb_listentry, .rb_typeoneentry {
     margin: 2px 0 0 5px;
     width: 24px;
 }
-.js #post-body .misc-pub-section.rb_addexisting {
-	max-width: 50%;
-	width: 50%;
+#postbox-container-2 .rb_addnew {
+	width: auto;
+	padding-right: 4.5%;
+	float: left;
+	border: none;
+	border-right: 1px solid #DFDFDF;
+}
+#postbox-container-2 .rb_addexisting {
+	max-width: 80%;
+	width: auto;
+	padding-left: 3%;
+	float: left;
+	border: none;
+	border-left: 1px solid #fff;
+}
+.js #postbox-container-1 {
+	.rb_addexisting {
+		.ui-combobox-input {
+			width: 87%;
+		}
+		.rb_add {
+			margin: 5px 2px 0 0 !important;
+			float: right;
+		}
+	}
+	.rb_listentry {
+		&:hover {
+			.rb_list-title {
+				display: none;
+			}
+		}
+	}
 }
 
 #post-body .misc-pub-section-last.rb_typeoneentry {

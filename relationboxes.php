@@ -2,10 +2,10 @@
 /*
 Plugin Name: Relation Boxes
 Plugin URI: https://github.com/Xiphe/WP-Relation-Boxes
-Description: A Wordpress Plugin for easy enabling n-1, 1-1 and n-n relationships
-Version: 1.1.2
+Description: A Wordpress Plugin to establish n-1, 1-1 and n-n relationships between posts
+Version: 1.2.0-dev2
 Namespace: Xiphe\relationboxes
-Date: 2013-01-25 18:13:38 +01.00
+Date: 2013-05-08 09:49:25 +02.00
 Author: Xiphe
 Author URI: https://github.com/Xiphe/
 Required Plugins: themaster, html

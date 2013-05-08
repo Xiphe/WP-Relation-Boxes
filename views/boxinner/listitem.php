@@ -20,7 +20,7 @@ if ($related->hidden) {
 		'data-id' => $related->related_post_ID
 	))
 		->span( null, 'rb_drag_handler' )
-		->span( $related->related_post->post_title, 'rb_list-title')
+		->span( strip_tags($related->related_post->post_title), 'rb_list-title')
 		->s_span( 'rb_showhover alignright' );
 
 			// THIS IS SKIPPED IF INSERTED VIA AJAX
