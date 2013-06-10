@@ -13,7 +13,9 @@ $HTML->s_div( 'id=' . $id . '|class=rb_list_wrap' );
 
 	$HTML->sg_ul( '#rb_' . $To->name . '_list|.rb_list' );
 	$relations = $RelationDraft->get_relations();
-	if (isset($_GET['related_to'])) {
+	if (isset($_GET['related_to']) &&
+		get_post_type($_GET['related_to']) === $RelationDraft->RelatedPto->name
+	) {
 		$found = false;
 		foreach ($relations as $related) {
 			if ($related->related_post_ID == $_GET['related_to']) {

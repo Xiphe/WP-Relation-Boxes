@@ -86,8 +86,9 @@ foreach ($subposts as $subpost) {
 		/*
 		 * This is targeted by the related_to GET parameter.
 		 */
-		if (isset($_GET['related_to'])
-		 && $_GET['related_to'] == $subpost->ID
+		if (isset($_GET['related_to']) &&
+			$_GET['related_to'] == $subpost->ID &&
+			get_post_type($_GET['related_to']) === $RelationDraft->RelatedPto->name
 		) {
 			if ($RelationDraft->relatedType == 1) {
 				$args[$subpost->ID]['attrs']['selected'] = 'selected';
